@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<title>港府「保就業」計劃獲批名單</title>
+</head>
+<body>
+<div class="container">
+  <div class="jumbotron">
+	<h1>港府「保就業」計劃獲批名單</h1>
+</div>
+<form action='/' method="post">
+	<div class="form-group">
+		<input type="text" name="keyword" placeholder="keyword">
+		<button type="submit" name="submit" value="ch">中文搜尋</button>
+		<button type="submit" name="submit" value="en">English search</button>
+	</div>
+</form>
+<% if (searchTitle !== '') { %>
+<button type="button" class="btn btn-primary"><%= searchTitle %><span class="badge"><%= noResult %></span></button>
+<% } %>
+<table class="table table-hover">
+	<thead>
+		<tr>
+	        <th>Company Name</th>
+	        <th>公司名稱</th>
+	        <th class="text-right">補貼金額</th>
+	        <th class="text-right">僱員人數</th>
+	    </tr>
+    </thead>
+    <tbody>
+		<% for (const record of companyRecords) { %>
+		<tr>
+			<td><%= record.companyEn %></td>  
+			<td><%= record.companyCh %></td>  
+			<td class="text-right"><%= record.subsidy %></td>  
+			<td class="text-right"><%= record.employee %></td>  
+		</tr>
+		<% } %>
+	</tbody>
+</table>
+</div>
+</body>
+</html>
