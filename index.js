@@ -6,8 +6,11 @@ const bodyParser = require("body-parser");
 
 const express = require('express');
 const app = express();
+const helper = require(__dirname+"/helper.js");
 
 app.use(bodyParser.urlencoded({extended:true}));
+// app.use(express.static("public"));   // to assign a folder to hold static resource like css, javascript
+
 app.set('view engine','ejs');
 
 const maxNo = 50;
@@ -38,8 +41,14 @@ app.get('/', function(req, res){
 		})
 		.on('end', () => {
 			console.log('CSV file successfully processed');
-			res.render("list", {companyRecords: [], searchTitle:'', noResult:'', lastKeyword:'', sortCriteria: "subsidy",
-				 totalSubsidy: 0, totalStaff: 0});
+			res.render("list", {companyRecords: [], 
+							searchTitle:'', 
+							noResult:'',
+							lastKeyword:'', 
+							sortCriteria: "subsidy",
+				 			totalSubsidy: 0,
+				 			 totalStaff: 0
+				 		});
 		});
 	}
 });
@@ -67,7 +76,7 @@ app.post('/', function(req, res){
 			}
 		}
 
-		answer = sortAnswer(answer, sortCriteria);
+		answer = helper.sortAnswer(answer, sortCriteria);
 
 		searchTitle = '關鍵詞： ' + keyword + ' ';
 		noResult = answer.length;
@@ -75,7 +84,7 @@ app.post('/', function(req, res){
 	} else {
 
 		answer = JSON.parse(JSON.stringify(dataArray));
-		answer = sortAnswer(answer, sortCriteria);
+		answer = helper.sortAnswer(answer, sortCriteria);
 		answer = answer.slice(0, maxNo);
 
 		searchTitle = "Top ";
@@ -83,8 +92,8 @@ app.post('/', function(req, res){
 
 	} 
 
-	totalSubsidy = answer.reduce(function(sumAll,datum){ return sumAll + parseInt(datum.subsidy); }, 0);
-	totalStaff = answer.reduce(function(sumAll,datum){ return sumAll + parseInt(datum.employee); }, 0);
+	totalSubsidy = helper.calculateSum(answer, 'subsidy');
+	totalStaff = helper.calculateSum(answer, 'employee');
 
 	res.redirect("/");
 
@@ -93,16 +102,3 @@ app.post('/', function(req, res){
 app.listen(3000, function(){
 	console.log("server started on port 3000");
 });
-
-function sortAnswer(data, column, asc=false){
-	if (!asc) {
-		data = data.sort(function (x, y) {
-		    return y[column] - x[column];
-		});
-	} else {
-		data = data.sort(function (x, y) {
-		    return x[column] - y[column];
-		});
-	}
-	return data;
-}
