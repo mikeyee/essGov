@@ -7,6 +7,11 @@
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 	<title>港府「保就業」計劃獲批名單</title>
+<style>
+.form-control-range {
+  width: 10% !important;
+}
+</style>
 </head>
 <body>
 <div class="container">
@@ -15,14 +20,23 @@
 </div>
 <form action='/' method="post">
 	<div class="form-group">
-		<input type="text" name="keyword" placeholder="keyword">
+		<input type="text" name="keyword" placeholder="關鍵詞" value="<%= lastKeyword %>">
 		<button type="submit" name="submit" value="ch">中文搜尋</button>
 		<button type="submit" name="submit" value="en">English search</button>
 	</div>
+	<div class="form-group">
+		<span> 排序標準： </span>
+		<label class="radio-inline"><input type="radio" name="optradio" value="subsidy" <%= sortCriteria == "subsidy" ? "checked" : "" %>  >補貼金額</label>
+		<label class="radio-inline"><input type="radio" name="optradio" value="employee" <%= sortCriteria == "employee" ? "checked" : "" %> >員工數目</label>
+	</div>
+	<!-- <input type="range" class="form-control-range" id="formControlRange" min="0" max="100" value="50" oninput="num.value = this.value">
+	<output id="num">0</output> -->
 </form>
 <% if (searchTitle !== '') { %>
 <button type="button" class="btn btn-primary"><%= searchTitle %><span class="badge"><%= noResult %></span></button>
 <% } %>
+<button type="button" class="btn btn-primary">總補貼金額： <span class="badge">$<%= Intl.NumberFormat().format(totalSubsidy) %></span></button>
+<button type="button" class="btn btn-primary">總僱員人數： <span class="badge"><%= Intl.NumberFormat().format(totalStaff) %></span></button>
 <table class="table table-hover">
 	<thead>
 		<tr>
@@ -37,7 +51,7 @@
 		<tr>
 			<td><%= record.companyEn %></td>  
 			<td><%= record.companyCh %></td>  
-			<td class="text-right"><%= record.subsidy %></td>  
+			<td class="text-right"><%= Intl.NumberFormat().format(record.subsidy) %></td>  
 			<td class="text-right"><%= record.employee %></td>  
 		</tr>
 		<% } %>
