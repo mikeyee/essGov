@@ -66,15 +66,24 @@ app.post('/', function(req, res){
 	console.log(dataArray.length);
 	
 	if (keyword !== '') {
-		for (let datum of dataArray){
+		// for (let datum of dataArray){
+		// 	let companyName = (lang === 'en') ? datum.companyEn : datum.companyCh;
+		// 	for(let keyword of trimKeywordArr){
+		// 		if (companyName.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
+		// 			answer.push(datum);
+		// 			break;
+		// 		}
+		// 	}
+		// }
+
+		dataArray.forEach(function(datum){
 			let companyName = (lang === 'en') ? datum.companyEn : datum.companyCh;
-			for(let keyword of trimKeywordArr){
+			trimKeywordArr.forEach(function(keyword){
 				if (companyName.toLowerCase().indexOf(keyword.toLowerCase()) !== -1) {
 					answer.push(datum);
-					break;
 				}
-			}
-		}
+			});
+		});
 
 		answer = helper.sortAnswer(answer, sortCriteria);
 
@@ -84,6 +93,7 @@ app.post('/', function(req, res){
 	} else {
 
 		answer = JSON.parse(JSON.stringify(dataArray));
+		answer = answer.filter(filterNewBatch);
 		answer = helper.sortAnswer(answer, sortCriteria);
 		answer = answer.slice(0, maxNo);
 
@@ -102,3 +112,8 @@ app.post('/', function(req, res){
 app.listen(3000, function(){
 	console.log("server started on port 3000");
 });
+
+
+function filterNewBatch(datum){
+	return datum.new == '*';
+}
